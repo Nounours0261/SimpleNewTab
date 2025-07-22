@@ -1,0 +1,93 @@
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+
+    .modal-content {
+        background: #222;
+        padding: 10px;
+        border-radius: 12px;
+        color: white;
+        min-width: 400px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+
+        .modal-title {
+            display: flex;
+            justify-content: center;
+
+            h2 {
+                margin: 10px 0 0 0;
+            }
+        }
+
+        .modal-section {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+
+            h3 {
+                margin: 0 0 10px 0;
+            }
+
+            label {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                cursor: pointer;
+            }
+
+            input {
+                width: calc(100% - 16px);
+                padding: 8px;
+                border: none;
+                border-radius: 6px;
+            }
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+
+            .modal-button {
+                padding: 6px 12px;
+                border-radius: 6px;
+                border: none;
+                cursor: pointer;
+                color: white;
+            }
+
+            .modal-button.green {
+                background-color: #4caf50;
+            }
+
+            .modal-button.blue {
+                background-color: dodgerblue;
+            }
+
+            .modal-button.red {
+                background-color: #f44336;
+            }
+        }
+    }
+}
+
+.stick-right {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.stick-left {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+}

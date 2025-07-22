@@ -1,0 +1,77 @@
+#shortcuts-container {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    height: 100vh;
+    width: fit-content;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-evenly;
+    padding: 20px;
+
+    .shortcut-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 96px;
+        height: 96px;
+        text-align: center;
+        background: var(--bg-color);
+        border-radius: 12px;
+        padding: 10px 5px;
+        transition: background 0.2s ease;
+
+        .content-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 8px;
+
+            .shortcut-icon {
+                width: 48px;
+                height: 48px;
+            }
+
+            .shortcut-label {
+                font-size: 13px;
+                color: var(--text-color);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                text-decoration: none;
+            }
+        }
+
+        .shortcut-edit {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 12px;
+            display: none;
+        }
+    }
+
+    .shortcut-card:hover {
+        background: var(--bg-color-hover);
+
+        .shortcut-edit {
+            display: flex;
+        }
+    }
+
+    a:link,
+    a:visited {
+        text-decoration: none;
+        color: inherit;
+    }
+}

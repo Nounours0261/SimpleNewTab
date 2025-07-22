@@ -1,0 +1,29 @@
+:root {
+    --color-value: 0;
+    --text-color: rgb(var(--color-value), var(--color-value), var(--color-value));
+    --bg-color: rgba(var(--color-value), var(--color-value), var(--color-value), 0.1);
+    --bg-color-hover: rgba(var(--color-value), var(--color-value), var(--color-value), 0.2);
+}
+
+body {
+    margin: 0;
+
+    #background-layer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-color: crimson;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
