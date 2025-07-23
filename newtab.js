@@ -221,7 +221,7 @@ function showBackgroundModal(data) {
             <div class="modal-section">
                 <h3>URL</h3>
                 <input type="url" id="background-url-input"
-                       placeholder="https://i.imgur.com/KGmRV1z.png" value="${data ? data.url : ""}" />
+                       placeholder="https://i.imgur.com/xJ92icr.png" value="${data ? data.url : ""}" />
             </div>
             <div class="modal-section">
                 <h3>Text color</h3>
@@ -307,12 +307,10 @@ function showBackgroundModal(data) {
 
 function pickRandomBackground() {
     chrome.storage.sync.get(["backgrounds"], (result) => {
-        const backgrounds = result.backgrounds || [
-            {
-                url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1280&q=80",
-                theme: "white"
-            }
-        ];
+        let backgrounds = [{url: "https://i.imgur.com/xJ92icr.png", theme: "black"}];
+        if (result.backgrounds !== undefined && result.backgrounds.length !== 0) {
+            backgrounds = result.backgrounds;
+        }
         setBackground(backgrounds[Math.floor(Math.random() * backgrounds.length)]);
     });
 }
