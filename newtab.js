@@ -128,7 +128,6 @@ function renderShortcuts() {
             const card = document.createElement("a");
             card.className = "shortcut-card";
             card.href = url;
-            card.target = "_blank";
             card.innerHTML = `
                 <div class="shortcut-edit"
                      title="Edit shortcut">
