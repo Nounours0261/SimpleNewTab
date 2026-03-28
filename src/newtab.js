@@ -38,7 +38,7 @@ function showShortcutModal(data) {
     const modal = document.createElement("div");
     modal.className = "modal";
     modal.innerHTML = `
-        <div class="modal-content">
+        <form class="modal-content">
             <div class="modal-title">
                 <h2>${data ? "Edit" : "Add"} Shortcut</h2>
             </div>
@@ -54,18 +54,19 @@ function showShortcutModal(data) {
             </div>
             <div class="modal-actions">
                 <div class="stick-left">
-                    ${data ? `<button id="delete-shortcut" class="modal-button red">Delete</button>` : ""}
+                    ${data ? `<button id="delete-shortcut" class="modal-button red" type="button">Delete</button>` : ""}
                 </div>
                 <div class="stick-right">
-                    <button id="cancel-shortcut" class="modal-button blue">Cancel</button>
-                    <button id="save-shortcut" class="modal-button green">Save</button>
+                    <button id="cancel-shortcut" class="modal-button blue" type="button">Cancel</button>
+                    <button id="save-shortcut" class="modal-button green" type="submit">Save</button>
                 </div>
             </div>
-        </div>`;
+        </form>`;
     document.body.appendChild(modal);
 
 
-    modal.querySelector("#save-shortcut").addEventListener("click", () => {
+    modal.querySelector("form").addEventListener("submit", (e) => {
+        e.preventDefault();
         const name = document.getElementById("shortcut-name").value.trim();
         const url = document.getElementById("shortcut-url").value.trim();
 
@@ -116,6 +117,8 @@ function showShortcutModal(data) {
     }
 
     document.addEventListener("keydown", checkKey);
+
+    modal.querySelector("#shortcut-name").focus();
 }
 
 function renderShortcuts() {
@@ -214,7 +217,7 @@ function showBackgroundModal(data) {
     const modal = document.createElement("div");
     modal.className = "modal";
     modal.innerHTML = `
-        <div class="modal-content">
+        <form class="modal-content">
             <div class="modal-title">
                 <h2>${data ? "Edit" : "Add"} Background</h2>
             </div>
@@ -240,14 +243,14 @@ function showBackgroundModal(data) {
             </div>
             <div class="modal-actions">
                 <div class="stick-left">
-                    ${data ? `<button id="delete-background" class="modal-button red">Delete</button>` : ""}
+                    ${data ? `<button id="delete-background" class="modal-button red" type="button">Delete</button>` : ""}
                 </div>
                 <div class="stick-right">
-                    <button id="cancel-background" class="modal-button blue">Cancel</button>
-                    <button id="save-background" class="modal-button green">Save</button>
+                    <button id="cancel-background" class="modal-button blue" type="button">Cancel</button>
+                    <button id="save-background" class="modal-button green" type="submit">Save</button>
                 </div>
             </div>
-        </div>`;
+        </form>`;
     document.body.appendChild(modal);
 
 
@@ -255,7 +258,8 @@ function showBackgroundModal(data) {
         modal.remove();
     });
 
-    modal.querySelector("#save-background").addEventListener("click", () => {
+    modal.querySelector("form").addEventListener("submit", (e) => {
+        e.preventDefault();
         const url = modal.querySelector("#background-url-input").value.trim();
         const theme = modal.querySelector('input[name="theme"]:checked').value;
 
@@ -303,6 +307,8 @@ function showBackgroundModal(data) {
     }
 
     document.addEventListener("keydown", checkKey);
+
+    modal.querySelector("#background-url-input").focus();
 }
 
 function pickRandomBackground() {
