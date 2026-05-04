@@ -4,31 +4,31 @@ const shortcutsContainer = document.getElementById("shortcuts-container");
 const backgroundLayer = document.getElementById("background-layer");
 
 function addShortcut(data) {
-    chrome.storage.sync.get(["shortcuts"], (result) => {
+    chrome.storage.local.get(["shortcuts"], (result) => {
         const shortcuts = result.shortcuts || [];
         shortcuts.push(data);
-        chrome.storage.sync.set({shortcuts}, () => {
+        chrome.storage.local.set({shortcuts}, () => {
             renderShortcuts();
         });
     });
 }
 
 function editShortcut(data, index) {
-    chrome.storage.sync.get(["shortcuts"], (result) => {
+    chrome.storage.local.get(["shortcuts"], (result) => {
         const shortcuts = result.shortcuts;
         shortcuts[index] = data;
-        chrome.storage.sync.set({shortcuts}, () => {
+        chrome.storage.local.set({shortcuts}, () => {
             renderShortcuts();
         });
     });
 }
 
 function deleteShortcut(indexToRemove) {
-    chrome.storage.sync.get(["shortcuts"], (result) => {
+    chrome.storage.local.get(["shortcuts"], (result) => {
         let shortcuts = result.shortcuts;
         shortcuts.splice(indexToRemove, 1);
 
-        chrome.storage.sync.set({shortcuts}, () => {
+        chrome.storage.local.set({shortcuts}, () => {
             renderShortcuts(shortcuts);
         });
     });
@@ -124,7 +124,7 @@ function showShortcutModal(data) {
 function renderShortcuts() {
     shortcutsContainer.innerHTML = "";
 
-    chrome.storage.sync.get(["shortcuts"], (result) => {
+    chrome.storage.local.get(["shortcuts"], (result) => {
         const shortcuts = result.shortcuts || [];
 
         shortcuts.forEach(({name, url}, index) => {
@@ -181,10 +181,10 @@ function renderShortcuts() {
 
 
 function addBackground(data) {
-    chrome.storage.sync.get(["backgrounds"], (result) => {
+    chrome.storage.local.get(["backgrounds"], (result) => {
         const backgrounds = result.backgrounds || [];
         backgrounds.push(data);
-        chrome.storage.sync.set({backgrounds}, () => {
+        chrome.storage.local.set({backgrounds}, () => {
             renderBackgrounds();
             setBackground(data);
         });
@@ -192,10 +192,10 @@ function addBackground(data) {
 }
 
 function editBackground(data, index) {
-    chrome.storage.sync.get(["backgrounds"], (result) => {
+    chrome.storage.local.get(["backgrounds"], (result) => {
         const backgrounds = result.backgrounds;
         backgrounds[index] = data;
-        chrome.storage.sync.set({backgrounds}, () => {
+        chrome.storage.local.set({backgrounds}, () => {
             renderBackgrounds();
             setBackground(data);
         });
@@ -203,10 +203,10 @@ function editBackground(data, index) {
 }
 
 function deleteBackground(index) {
-    chrome.storage.sync.get(["backgrounds"], (result) => {
+    chrome.storage.local.get(["backgrounds"], (result) => {
         const backgrounds = result.backgrounds;
         backgrounds.splice(index, 1);
-        chrome.storage.sync.set({backgrounds}, () => {
+        chrome.storage.local.set({backgrounds}, () => {
             renderBackgrounds();
             pickRandomBackground();
         });
@@ -225,6 +225,9 @@ function showBackgroundModal(data) {
                 <h3>URL</h3>
                 <input type="url" id="background-url-input"
                        placeholder="https://i.imgur.com/xJ92icr.png" value="${data ? data.url : ""}" />
+                       <br><br>
+                <h3>Image</h3>
+                <input type="file" accept="image/*" id="background-image-input"/>
             </div>
             <div class="modal-section">
                 <h3>Text color</h3>
@@ -262,6 +265,26 @@ function showBackgroundModal(data) {
         e.preventDefault();
         const url = modal.querySelector("#background-url-input").value.trim();
         const theme = modal.querySelector('input[name="theme"]:checked').value;
+        const image = modal.querySelector("#background-image-input").files[0];
+
+
+        const reader = new FileReader();
+
+        reader.addEventListener("load", () => {
+            const url = reader.result;
+
+            if (data) {
+                editBackground({theme, url}, data.index)
+            } else {
+                addBackground({theme, url});
+            }
+            modal.remove();
+        });
+
+        if (image) {
+            reader.readAsDataURL(image);
+            return;
+        }
 
         if (!url) {
             alert("Please enter a URL!");
@@ -312,7 +335,7 @@ function showBackgroundModal(data) {
 }
 
 function pickRandomBackground() {
-    chrome.storage.sync.get(["backgrounds"], (result) => {
+    chrome.storage.local.get(["backgrounds"], (result) => {
         let backgrounds = [{url: "https://i.imgur.com/xJ92icr.png", theme: "black"}];
         if (result.backgrounds !== undefined && result.backgrounds.length !== 0) {
             backgrounds = result.backgrounds;
@@ -329,7 +352,7 @@ function setBackground({url, theme}) {
 function renderBackgrounds() {
     backgroundsContainer.innerHTML = "";
 
-    chrome.storage.sync.get(["backgrounds"], (result) => {
+    chrome.storage.local.get(["backgrounds"], (result) => {
         const backgrounds = result.backgrounds || [];
 
         backgrounds.forEach(({url, theme}, index) => {
