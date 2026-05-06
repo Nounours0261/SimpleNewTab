@@ -9,16 +9,115 @@
     <link rel="stylesheet" href="styles/shortcuts.css"/>
     <link rel="stylesheet" href="styles/backgrounds.css"/>
     <link rel="icon" type="image/png" href="../icons/icon32.png"/>
-    <script src="newtab.js" type="module"></script>
+    <script src="backgrounds.js" type="module"></script>
+    <script src="shortcuts.js" type="module"></script>
 </head>
+
 <body>
 <div id="background-layer"></div>
-<div class="container">
-    <div id="shortcuts-container"></div>
-    <div id="background-area">
-        <button id="toggle-backgrounds-btn">Backgrounds</button>
-        <div id="backgrounds-container"></div>
+
+<div class="container"
+>
+    <div id="shortcuts-container"
+    >
+        <div id="add-shortcut-button"
+             class="shortcut-card"
+             title="Add new shortcut"
+        >
+            <div class="content-wrapper"
+            >
+                <svg width="48" height="48" viewBox="0 0 24 24"
+                     fill="none" stroke="var(--text-color)" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round"
+                >
+                    <line x1="12" y1="7" x2="12" y2="17"/>
+                    <line x1="7" y1="12" x2="17" y2="12"/>
+                </svg>
+                <div class="shortcut-label"
+                >
+                    Add
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="background-area"
+    >
+        <button id="toggle-backgrounds-btn"
+        >
+            Backgrounds
+        </button>
+        <div id="backgrounds-container"
+        >
+            <div id="add-background-button"
+                 class="add-background-card"
+                 title="Add new background"
+            >
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+                     stroke="var(--text-color)" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round"
+                >
+                    <line x1="12" y1="7" x2="12" y2="17"/>
+                    <line x1="7" y1="12" x2="17" y2="12"/>
+                </svg>
+            </div>
+        </div>
     </div>
 </div>
+
+<template id="shortcut-template"
+>
+    <a class="shortcut-card"
+       href=""
+    >
+        <!-- ^ href -->
+        <div class="shortcut-edit"
+             title="Edit shortcut"
+        >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"
+            >
+                <circle cx="12" cy="5" r="2"/>
+                <circle cx="12" cy="12" r="2"/>
+                <circle cx="12" cy="19" r="2"/>
+            </svg>
+        </div>
+        <div class="content-wrapper"
+        >
+            <img class="shortcut-icon"
+                 src=""
+                 alt=""
+            >
+            <!-- ^ src -->
+            <!-- ^ alt -->
+            <div class="shortcut-label"
+            >
+                <!-- label -->
+            </div>
+        </div>
+    </a>
+</template>
+
+<template id="background-template"
+>
+    <div class="background-card"
+    >
+        <img class="background-thumb"
+             src=""
+             alt=""
+        >
+        <!-- ^ src -->
+        <!-- ^ alt -->
+        <div class="background-edit"
+             title="Edit background"
+        >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"
+            >
+                <circle cx="12" cy="5" r="2"/>
+                <circle cx="12" cy="12" r="2"/>
+                <circle cx="12" cy="19" r="2"/>
+            </svg>
+        </div>
+    </div>
+</template>
 </body>
 </html>

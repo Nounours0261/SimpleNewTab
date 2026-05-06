@@ -23,6 +23,7 @@
         border-radius: 12px;
         padding: 10px 5px;
         transition: background 0.2s ease;
+        cursor: pointer;
 
         .content-wrapper {
             display: flex;
