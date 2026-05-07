@@ -5,7 +5,7 @@ const backgroundTemplate = document.getElementById("background-template");
 const addBackgroundButton = document.getElementById("add-background-button");
 const modalTemplate = document.getElementById("background-modal");
 
-function setBackground(url, theme) {
+function setBackground({url, theme}) {
     backgroundLayer.style.backgroundImage = `url(${url})`;
     document.querySelector(':root').style.setProperty("--color-value", `${theme === "black" ? 0 : 255}`);
 }
@@ -13,32 +13,32 @@ function setBackground(url, theme) {
 async function pickRandomBackground() {
     const backgrounds = (await chrome.storage.local.get("backgrounds"))["backgrounds"] ?? [];
     if (backgrounds.length === 0) {
-        setBackground("https://i.imgur.com/xJ92icr.png", "black");
+        setBackground({url: "https://i.imgur.com/xJ92icr.png", theme: "black"});
         return;
     }
 
-    const data = backgrounds[Math.floor(Math.random() * backgrounds.length)];
-    setBackground((await chrome.storage.local.get(data.uu))[data.uu], data.theme);
+    const uu = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+    setBackground((await chrome.storage.local.get(uu))[uu]);
 }
 
-async function createBackgroundNode(uu, theme) {
+async function createBackgroundNode(uu) {
     const res = document.importNode(backgroundTemplate.content, true);
-    const url = (await chrome.storage.local.get(uu))[uu];
+    const data = (await chrome.storage.local.get(uu))[uu];
 
     const card = res.querySelector(".background-card");
     card.id = uu;
-    card.addEventListener("click", () => {
-        setBackground(url, theme);
+    card.addEventListener("click", async () => {
+        setBackground(data);
     });
 
     const thumb = res.querySelector(".background-thumb");
-    thumb.src = url;
+    thumb.src = data.url;
     thumb.alt = `background ${uu}`;
 
     const edit = res.querySelector(".background-edit");
     edit.addEventListener("click", (e) => {
         e.stopPropagation();
-        showBackgroundModal(uu, url, theme);
+        showBackgroundModal(uu, data.url, data.theme);
     });
 
     return res;
@@ -48,36 +48,37 @@ async function addBackground(url, theme) {
     // update storage
     const backgrounds = (await chrome.storage.local.get("backgrounds"))["backgrounds"] ?? [];
     const uu = window.crypto.randomUUID();
-    backgrounds.push({theme, uu});
-    await chrome.storage.local.set({backgrounds, [uu]: url});
+    backgrounds.push(uu);
+    await chrome.storage.local.set({backgrounds, [uu]: {url, theme}});
 
     // update page
-    backgroundsContainer.insertBefore(await createBackgroundNode(uu, theme), addBackgroundButton);
-    setBackground(url, theme);
+    backgroundsContainer.insertBefore(await createBackgroundNode(uu), addBackgroundButton);
+    setBackground({url, theme});
 }
 
 async function editBackground(uu, url, theme) {
     // update storage
     const backgrounds = (await chrome.storage.local.get("backgrounds"))["backgrounds"] ?? [];
     const index = backgrounds.findIndex((d) => {
-        return d.uu === uu;
+        return d === uu;
     });
-    backgrounds[index] = {theme, uu};
-    await chrome.storage.local.set({backgrounds, [uu]: url});
+    backgrounds[index] = uu;
+    await chrome.storage.local.set({backgrounds, [uu]: {url, theme}});
 
     // update page
+    const newBackground = await createBackgroundNode(uu);
     const curThumb = document.getElementById(uu);
     const next = curThumb.nextSibling;
     curThumb.remove();
-    backgroundsContainer.insertBefore(await createBackgroundNode(uu, theme), next);
-    setBackground(url, theme);
+    backgroundsContainer.insertBefore(newBackground, next);
+    setBackground({url, theme});
 }
 
 async function deleteBackground(uu) {
     // update storage
     const backgrounds = (await chrome.storage.local.get("backgrounds"))["backgrounds"] ?? [];
     const newBackgrounds = backgrounds.filter((d) => {
-        return d.uu !== uu;
+        return d !== uu;
     });
     await chrome.storage.local.set({backgrounds: newBackgrounds});
     await chrome.storage.local.remove(uu);
@@ -88,7 +89,7 @@ async function deleteBackground(uu) {
     await pickRandomBackground();
 }
 
-function showBackgroundModal(uu, url, theme) {
+async function showBackgroundModal(uu, url, theme) {
     const node = document.importNode(modalTemplate.content, true);
     document.body.appendChild(node);
 
@@ -176,8 +177,8 @@ async function startUp() {
     await pickRandomBackground();
 
     const backgrounds = (await chrome.storage.local.get("backgrounds"))["backgrounds"] ?? [];
-    for (let {uu, theme} of backgrounds) {
-        backgroundsContainer.insertBefore(await createBackgroundNode(uu, theme), addBackgroundButton);
+    for (let uu of backgrounds) {
+        backgroundsContainer.insertBefore(await createBackgroundNode(uu), addBackgroundButton);
     }
 
     toggleBackgroundsBtn.addEventListener("click", () => {
