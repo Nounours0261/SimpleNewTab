@@ -3,6 +3,7 @@ const toggleBackgroundsBtn = document.getElementById("toggle-backgrounds-btn");
 const backgroundsContainer = document.getElementById("backgrounds-container");
 const backgroundTemplate = document.getElementById("background-template");
 const addBackgroundButton = document.getElementById("add-background-button");
+const modalTemplate = document.getElementById("background-modal");
 
 function setBackground(url, theme) {
     backgroundLayer.style.backgroundImage = `url(${url})`;
@@ -88,114 +89,77 @@ async function deleteBackground(uu) {
 }
 
 function showBackgroundModal(uu, url, theme) {
-    const modal = document.createElement("div");
-    modal.className = "modal";
-    modal.innerHTML = `
-        <form class="modal-content">
-            <div class="modal-title">
-                <h2>${uu ? "Edit" : "Add"} Background</h2>
-            </div>
-            <div class="modal-section">
-                <h3>URL</h3>
-                <input type="url" id="background-url-input"
-                       placeholder="https://i.imgur.com/xJ92icr.png" value="${uu ? url : ""}" />
-                       <br><br>
-                <h3>Image</h3>
-                <input type="file" accept="image/*" id="background-image-input"/>
-            </div>
-            <div class="modal-section">
-                <h3>Text color</h3>
-                <div class="stick-left">
-                    <label>
-                        <input type="radio" name="theme" value="black"
-                               ${!uu || theme === "black" ? "checked" : ""}>
-                        Black
-                    </label>
-                    <label>
-                        <input type="radio" name="theme" value="white" 
-                               ${uu && theme !== "black" ? "checked" : ""}>
-                        White
-                    </label>
-                </div>
-            </div>
-            <div class="modal-actions">
-                <div class="stick-left">
-                    ${uu ? `<button id="delete-background" class="modal-button red" type="button">Delete</button>` : ""}
-                </div>
-                <div class="stick-right">
-                    <button id="cancel-background" class="modal-button blue" type="button">Cancel</button>
-                    <button id="save-background" class="modal-button green" type="submit">Save</button>
-                </div>
-            </div>
-        </form>`;
-    document.body.appendChild(modal);
+    const node = document.importNode(modalTemplate.content, true);
+    document.body.appendChild(node);
 
+    const modal = document.querySelector(".modal");
 
-    modal.querySelector("#cancel-background").addEventListener("click", () => {
-        modal.remove();
+    const title = modal.querySelector(".modal-title");
+    title.innerText = `${uu ? "Edit" : "Add"} Background`;
+
+    const urlInput = document.getElementById("background-url-input");
+
+    if (uu) {
+        urlInput.value = url;
+
+        if (theme === "white") {
+            const whiteButton = modal.querySelector(`[type="radio"][value="white"]`);
+            whiteButton.toggleAttribute("checked");
+            const blackButton = modal.querySelector(`[type="radio"][value="black"]`);
+            blackButton.toggleAttribute("checked");
+        }
+
+        const deleteButton = document.getElementById("delete-background");
+        deleteButton.classList.add("visible");
+        deleteButton.addEventListener("click", () => {
+            deleteBackground(uu);
+            removeModal();
+        });
+    }
+
+    modal.addEventListener("mousedown", (e) => {
+        if (e.target === modal) {
+            removeModal();
+        }
     });
 
-    modal.querySelector("form").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const url = modal.querySelector("#background-url-input").value.trim();
-        const theme = modal.querySelector('input[name="theme"]:checked').value;
-        const image = modal.querySelector("#background-image-input").files[0];
+    const cancel = document.getElementById("cancel-background");
+    cancel.addEventListener("click", () => {
+        removeModal();
+    });
 
-
+    const imageInput = document.getElementById("background-image-input");
+    imageInput.addEventListener("change", (e) => {
         const reader = new FileReader();
 
         reader.addEventListener("load", () => {
-            const url = reader.result;
-
-            if (uu) {
-                editBackground(uu, url, theme);
-            } else {
-                addBackground(url, theme);
-            }
-            modal.remove();
+            urlInput.value = reader.result;
+            imageInput.value = null;
         });
 
-        if (image) {
-            reader.readAsDataURL(image);
-            return;
-        }
-
-        if (!url) {
-            alert("Please enter a URL!");
-            return;
-        }
-
-        if (uu) {
-            editBackground(uu, url, theme);
-        } else {
-            addBackground(url, theme);
-        }
-        modal.remove();
+        reader.readAsDataURL(e.target.files[0]);
     });
 
-    if (uu) {
-        modal.querySelector("#delete-background").addEventListener("click", () => {
-            deleteBackground(uu);
-            modal.remove();
-        });
-    }
 
+    modal.querySelector("form").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(modal.querySelector(".modal-content"));
+        const newUrl = formData.get("url");
+        const newTheme = modal.querySelector('input[name="theme"]:checked').value;
+
+        if (uu) {
+            editBackground(uu, newUrl, newTheme);
+        } else {
+            addBackground(newUrl, newTheme);
+        }
+        removeModal();
+    });
 
     function removeModal() {
         modal.remove();
-        document.removeEventListener("click", checkClick);
-        document.removeEventListener("keydown", checkKey);
+        window.removeEventListener("keydown", checkKey);
     }
-
-    const modalContent = modal.querySelector(".modal-content");
-
-    function checkClick(e) {
-        if (!modalContent.contains(e.target)) {
-            removeModal();
-        }
-    }
-
-    document.addEventListener("click", checkClick);
 
     function checkKey(e) {
         if (e.key === "Escape") {
@@ -205,7 +169,7 @@ function showBackgroundModal(uu, url, theme) {
 
     document.addEventListener("keydown", checkKey);
 
-    modal.querySelector("#background-url-input").focus();
+    urlInput.focus();
 }
 
 async function startUp() {

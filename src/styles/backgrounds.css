@@ -37,12 +37,11 @@
         .background-card {
             position: relative;
             cursor: pointer;
-            background-color: #222;
             border-radius: 12px;
 
             .background-thumb {
                 width: 120px;
-                height: calc(120px * 1030 / 1920);
+                height: calc(120px * 1080 / 1920);
                 object-fit: cover;
                 border-radius: 12px;
                 display: block;

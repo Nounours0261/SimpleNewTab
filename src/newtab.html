@@ -70,7 +70,6 @@
     <a class="shortcut-card"
        href=""
     >
-        <!-- ^ href -->
         <div class="shortcut-edit"
              title="Edit shortcut"
         >
@@ -87,11 +86,8 @@
                  src=""
                  alt=""
             >
-            <!-- ^ src -->
-            <!-- ^ alt -->
             <div class="shortcut-label"
             >
-                <!-- label -->
             </div>
         </div>
     </a>
@@ -105,8 +101,6 @@
              src=""
              alt=""
         >
-        <!-- ^ src -->
-        <!-- ^ alt -->
         <div class="background-edit"
              title="Edit background"
         >
@@ -117,6 +111,92 @@
                 <circle cx="12" cy="19" r="2"/>
             </svg>
         </div>
+    </div>
+</template>
+
+<template id="shortcut-modal"
+>
+    <div class="modal">
+        <form class="modal-content">
+            <h2 class="modal-title"></h2>
+
+            <label class="modal-section">
+                Name
+                <input id="shortcut-name"
+                       type="text"
+                       name="name"
+                       class="text-input"
+                       placeholder="Awesome shortcut"
+                       required
+                >
+            </label>
+
+            <label class="modal-section">
+                URL
+                <input id="shortcut-url"
+                       type="url"
+                       name="url"
+                       class="text-input"
+                       placeholder="https://github.com/Nounours0261"
+                       required
+                >
+            </label>
+
+            <div class="modal-actions">
+                <div class="stick-left">
+                    <button id="delete-shortcut" class="modal-button red" type="button">Delete</button>
+                </div>
+                <div class="stick-right">
+                    <button id="cancel-shortcut" class="modal-button blue" type="button">Cancel</button>
+                    <button id="save-shortcut" class="modal-button green" type="submit">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</template>
+
+<template id="background-modal">
+    <div class="modal">
+        <form class="modal-content">
+            <h2 class="modal-title"></h2>
+
+            <label class="modal-section">
+                URL
+                <input id="background-url-input"
+                       type="url"
+                       name="url"
+                       class="text-input"
+                       placeholder="https://i.imgur.com/xJ92icr.png"
+                       required
+                >
+            </label>
+            <label class="modal-section">
+                Upload image
+                <input type="file" accept="image/*" id="background-image-input">
+            </label>
+            <div class="modal-section">
+                Theme
+                <div class="stick-left">
+                    <label>
+                        <input type="radio" name="theme" value="black" checked>
+                        Black
+                    </label>
+                    <label>
+                        <input type="radio" name="theme" value="white">
+                        White
+                    </label>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <div class="stick-left">
+                    <button id="delete-background" class="modal-button red" type="button">Delete</button>
+                </div>
+                <div class="stick-right">
+                    <button id="cancel-background" class="modal-button blue" type="button">Cancel</button>
+                    <button id="save-background" class="modal-button green" type="submit">Save</button>
+                </div>
+            </div>
+        </form>
     </div>
 </template>
 </body>

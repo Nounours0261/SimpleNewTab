@@ -1,6 +1,7 @@
 const shortcutsContainer = document.getElementById("shortcuts-container");
 const shortcutTemplate = document.getElementById("shortcut-template");
 const addShortcutButton = document.getElementById("add-shortcut-button");
+const modalTemplate = document.getElementById("shortcut-modal");
 
 function createShortcutNode(uu, url, name) {
     const res = document.importNode(shortcutTemplate.content, true);
@@ -67,81 +68,60 @@ async function deleteShortcut(uu) {
 }
 
 function showShortcutModal(uu, url, name) {
-    const modal = document.createElement("div");
-    modal.className = "modal";
-    modal.innerHTML = `
-        <form class="modal-content">
-            <div class="modal-title">
-                <h2>${uu ? "Edit" : "Add"} Shortcut</h2>
-            </div>
-            <div class="modal-section">
-                <h3>Name</h3>
-                <input type="text" id="shortcut-name"
-                       placeholder="Awesome shortcut" value="${uu ? name : ""}" />
-            </div>
-            <div class="modal-section">
-                <h3>URL</h3>
-                <input type="url" id="shortcut-url"
-                       placeholder="https://github.com/Nounours0261" value="${uu ? url : ""}" />
-            </div>
-            <div class="modal-actions">
-                <div class="stick-left">
-                    ${uu ? `<button id="delete-shortcut" class="modal-button red" 
-                    type="button">Delete</button>` : ""}
-                </div>
-                <div class="stick-right">
-                    <button id="cancel-shortcut" class="modal-button blue" type="button">Cancel</button>
-                    <button id="save-shortcut" class="modal-button green" type="submit">Save</button>
-                </div>
-            </div>
-        </form>`;
-    document.body.appendChild(modal);
+    const node = document.importNode(modalTemplate.content, true);
+    document.body.appendChild(node);
+    const modal = document.querySelector(".modal");
 
+    const title = modal.querySelector(".modal-title");
+    title.innerText = `${uu ? "Edit" : "Add"} Shortcut`;
 
-    modal.querySelector("form").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const name = document.getElementById("shortcut-name").value.trim();
-        const url = document.getElementById("shortcut-url").value.trim();
-
-        if (!name || !url) {
-            alert("Please fill in both fields!");
-            return;
-        }
-
-        if (uu) {
-            editShortcut(uu, url, name);
-        } else {
-            addShortcut(url, name);
-        }
-
-        removeModal();
-    });
-
-    modal.querySelector("#cancel-shortcut").addEventListener("click", removeModal);
+    const nameInput = document.getElementById("shortcut-name");
 
     if (uu) {
-        modal.querySelector("#delete-shortcut").addEventListener("click", () => {
+        nameInput.value = name;
+
+        const urlInput = document.getElementById("shortcut-url");
+        urlInput.value = url;
+
+        const deleteButton = document.getElementById("delete-shortcut");
+        deleteButton.classList.add("visible");
+        deleteButton.addEventListener("click", () => {
             deleteShortcut(uu);
             removeModal();
         });
     }
 
+    modal.addEventListener("mousedown", (e) => {
+        if (e.target === modal) {
+            removeModal();
+        }
+    });
+
+    const cancel = document.getElementById("cancel-shortcut");
+    cancel.addEventListener("click", () => {
+        removeModal();
+    });
+
+    modal.querySelector("form").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(modal.querySelector(".modal-content"));
+        const newUrl = formData.get("url");
+        const newName = formData.get("name");
+
+        if (uu) {
+            editShortcut(uu, newUrl, newName);
+        } else {
+            addShortcut(newUrl, newName);
+        }
+
+        removeModal();
+    });
 
     function removeModal() {
         modal.remove();
-        document.removeEventListener("click", checkClick);
-        document.removeEventListener("keydown", checkKey);
+        window.removeEventListener("keydown", checkKey);
     }
-
-    const modalContent = modal.querySelector(".modal-content");
-
-    function checkClick(e) {
-        if (!modalContent.contains(e.target)) {
-            removeModal();
-        }
-    }
-
-    document.addEventListener("click", checkClick);
 
     function checkKey(e) {
         if (e.key === "Escape") {
@@ -151,7 +131,7 @@ function showShortcutModal(uu, url, name) {
 
     document.addEventListener("keydown", checkKey);
 
-    modal.querySelector("#shortcut-name").focus();
+    nameInput.focus();
 }
 
 async function startUp() {

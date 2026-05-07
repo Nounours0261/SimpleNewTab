@@ -1,7 +1,6 @@
 #shortcuts-container {
     display: flex;
     flex-direction: column;
-    align-items: start;
     height: 100vh;
     width: fit-content;
     box-sizing: border-box;
@@ -25,6 +24,11 @@
         transition: background 0.2s ease;
         cursor: pointer;
 
+        font-size: 13px;
+        text-decoration: none;
+        color: var(--text-color);
+        text-overflow: ellipsis;
+
         .content-wrapper {
             display: flex;
             justify-content: center;
@@ -35,14 +39,6 @@
             .shortcut-icon {
                 width: 48px;
                 height: 48px;
-            }
-
-            .shortcut-label {
-                font-size: 13px;
-                color: var(--text-color);
-                overflow: hidden;
-                text-overflow: ellipsis;
-                text-decoration: none;
             }
         }
 
@@ -68,11 +64,5 @@
         .shortcut-edit {
             display: flex;
         }
-    }
-
-    a:link,
-    a:visited {
-        text-decoration: none;
-        color: inherit;
     }
 }
